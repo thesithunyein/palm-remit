@@ -30,27 +30,35 @@ const RPC = 'https://api.devnet.solana.com';
 const DECIMALS = 6;
 const SEED_AMOUNT = 10_000; // 10,000 PUSD into your wallet
 
-function loadKeypair(): Keypair {
+function loadOrCreateKeypair(): Keypair {
   const fromEnv = process.env.SOLANA_KEYPAIR_PATH;
   const candidates = [
     fromEnv,
     path.join(os.homedir(), '.config', 'solana', 'id.json'),
+    path.join(process.cwd(), '.devnet-keypair.json'),
   ].filter(Boolean) as string[];
 
   for (const p of candidates) {
     if (fs.existsSync(p)) {
       const raw = JSON.parse(fs.readFileSync(p, 'utf8'));
+      console.log('Using existing keypair:', p);
       return Keypair.fromSecretKey(Uint8Array.from(raw));
     }
   }
-  throw new Error(
-    'No Solana keypair found. Run `solana-keygen new` first or set SOLANA_KEYPAIR_PATH.'
-  );
+
+  // No keypair found — create one and save it next to the project so the
+  // user doesn't need the Solana CLI installed.
+  const generated = Keypair.generate();
+  const out = path.join(process.cwd(), '.devnet-keypair.json');
+  fs.writeFileSync(out, JSON.stringify(Array.from(generated.secretKey)));
+  console.log('Generated new devnet keypair at:', out);
+  console.log('(this file is gitignored — keep it; it holds your devnet PUSD)');
+  return generated;
 }
 
 async function main() {
   const connection = new Connection(RPC, 'confirmed');
-  const payer = loadKeypair();
+  const payer = loadOrCreateKeypair();
   console.log('Payer:', payer.publicKey.toBase58());
 
   const balance = await connection.getBalance(payer.publicKey);
