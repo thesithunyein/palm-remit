@@ -1,48 +1,13 @@
 import { ImageResponse } from 'next/og';
-import { Connection, Keypair, PublicKey } from '@solana/web3.js';
-import { getAssociatedTokenAddress } from '@solana/spl-token';
-import bs58 from 'bs58';
 
 export const runtime = 'edge';
 export const alt = 'Palm Remit — claim your PUSD';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const RPC = process.env.NEXT_PUBLIC_RPC_URL || 'https://api.devnet.solana.com';
-const MINT = process.env.NEXT_PUBLIC_PUSD_MINT;
-const DECIMALS = Number(process.env.NEXT_PUBLIC_PUSD_DECIMALS || 6);
-
-async function fetchAmount(secret: string): Promise<string | null> {
-  if (!MINT) return null;
-  try {
-    const escrow = Keypair.fromSecretKey(bs58.decode(secret));
-    const conn = new Connection(RPC, 'confirmed');
-    const ata = await getAssociatedTokenAddress(
-      new PublicKey(MINT),
-      escrow.publicKey
-    );
-    const bal = await conn.getTokenAccountBalance(ata);
-    const ui = bal.value.uiAmount ?? 0;
-    return ui.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: ui % 1 === 0 ? 0 : 2,
-    });
-  } catch {
-    return null;
-  }
-}
-
-export default async function Image({
-  params,
-}: {
-  params: { secret: string };
-}) {
-  const amount = await fetchAmount(params.secret);
-  const headline = amount ?? 'PUSD';
-  const sub = amount
-    ? 'is ready to claim'
-    : 'A claim link is waiting for you';
+export default async function Image() {
+  const headline = 'PUSD';
+  const sub = 'is ready to claim';
 
   return new ImageResponse(
     (
