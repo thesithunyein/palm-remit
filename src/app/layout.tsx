@@ -5,14 +5,31 @@ import { Navbar } from '@/components/navbar';
 import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
-  title: 'Palm Remit — Send PUSD anywhere',
+  metadataBase: new URL('https://palm-remit.vercel.app'),
+  title: 'Palm Remit — Send PUSD like sending a link',
   description:
-    'Non-freezable money rails for the world. Send PUSD with a link, claim in seconds. Built on Solana.',
+    'Non-freezable money rails for the world. Send PUSD with a link, claim in seconds. Built on Solana for the Palm USD × Superteam UAE Hackathon.',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
   openGraph: {
-    title: 'Palm Remit',
+    title: 'Palm Remit — Send PUSD like sending a link',
     description:
       'Non-freezable money rails. Send PUSD with a link, claim in seconds.',
     type: 'website',
+    url: 'https://palm-remit.vercel.app',
+    siteName: 'Palm Remit',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Palm Remit — Send PUSD like sending a link',
+    description:
+      'Non-freezable money rails. 4 seconds, ~$0.0001 fee. Built on Solana.',
   },
 };
 
