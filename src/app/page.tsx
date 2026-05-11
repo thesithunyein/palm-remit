@@ -10,6 +10,10 @@ import {
   ShieldCheck,
   Send,
   Link as LinkIcon,
+  Check,
+  X,
+  Github,
+  Twitter,
 } from 'lucide-react';
 
 export default function Home() {
@@ -181,6 +185,99 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Comparison */}
+      <section className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mb-16 text-center">
+          <div className="text-[13px] font-semibold uppercase tracking-widest text-palm-400">
+            How we compare
+          </div>
+          <h2 className="mt-4 font-display text-[44px] font-semibold leading-tight tracking-tighter sm:text-[56px]">
+            Same money. Different rails.
+          </h2>
+        </div>
+        <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-xl">
+          <div className="grid grid-cols-5 gap-px bg-white/5 text-[13px] sm:text-[14px]">
+            {/* header row */}
+            <div className="bg-black p-4 sm:p-6 text-white/40 uppercase tracking-wider text-[11px]">
+              Provider
+            </div>
+            <div className="bg-black p-4 sm:p-6 text-white/40 uppercase tracking-wider text-[11px] text-center">
+              Fee
+            </div>
+            <div className="bg-black p-4 sm:p-6 text-white/40 uppercase tracking-wider text-[11px] text-center">
+              Settles in
+            </div>
+            <div className="bg-black p-4 sm:p-6 text-white/40 uppercase tracking-wider text-[11px] text-center">
+              Receiver KYC
+            </div>
+            <div className="bg-black p-4 sm:p-6 text-white/40 uppercase tracking-wider text-[11px] text-center">
+              Censor-proof
+            </div>
+
+            <CompareRow name="Western Union" fee="6–8%" time="1–5 days" kyc={true} censor={false} />
+            <CompareRow name="Banks (SWIFT)" fee="3–6%" time="2–3 days" kyc={true} censor={false} />
+            <CompareRow name="Wise" fee="0.5–1.5%" time="minutes–hours" kyc={true} censor={false} />
+            <CompareRow name="USDC over Solana" fee="~$0" time="seconds" kyc={true} censor={false} />
+            <CompareRow
+              name="Palm Remit"
+              fee="~$0"
+              time="4 seconds"
+              kyc={false}
+              censor={true}
+              highlight
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Architecture */}
+      <section className="mx-auto max-w-6xl px-6 py-24">
+        <div className="grid items-center gap-12 lg:grid-cols-2">
+          <div>
+            <div className="text-[13px] font-semibold uppercase tracking-widest text-palm-400">
+              Architecture
+            </div>
+            <h2 className="mt-4 font-display text-[44px] font-semibold leading-tight tracking-tighter sm:text-[56px]">
+              No program.
+              <br />
+              No kill switch.
+            </h2>
+            <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-white/55">
+              We don't deploy an Anchor program. Each send mints a fresh
+              ephemeral keypair whose only job is to hold PUSD until claimed.
+              The claim secret is the keypair's private key, base58-encoded.
+            </p>
+            <p className="mt-4 max-w-lg text-[17px] leading-relaxed text-white/55">
+              No PDA. No upgrade authority. No admin function. The escrow even
+              pays its own claim fee — recipients never need SOL.
+            </p>
+            <p className="mt-4 max-w-lg text-[15px] italic leading-relaxed text-palm-300/70">
+              The only architecture aligned with PUSD's "no central authority"
+              ethos.
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute -inset-1 rounded-[28px] bg-gradient-to-br from-palm-500/30 via-transparent to-cyan-500/20 opacity-50 blur-2xl" />
+            <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-black/40 p-8 backdrop-blur-2xl">
+              <ArchNode label="Sender wallet" sub="Signs send tx" tone="white" />
+              <ArchArrow label="1 transfer + create ATA" />
+              <ArchNode
+                label="Ephemeral escrow"
+                sub="Per-send keypair · Holds PUSD"
+                tone="palm"
+              />
+              <ArchArrow label="Claim link = base58(secretKey)" />
+              <ArchNode
+                label="Recipient wallet"
+                sub="Receives PUSD · Pays $0 gas"
+                tone="white"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="mx-auto max-w-6xl px-6 py-32 text-center">
         <h2 className="font-display text-[56px] font-semibold leading-[1.05] tracking-tightest sm:text-[88px]">
@@ -207,19 +304,112 @@ export default function Home() {
           <div className="text-[13px] text-white/40">
             Palm Remit · Built for the Palm USD × Superteam UAE Hackathon
           </div>
-          <div className="flex items-center gap-6 text-[13px] text-white/40">
-            <a href="https://github.com" className="hover:text-white">
-              GitHub
+          <div className="flex items-center gap-5 text-[13px] text-white/40">
+            <a
+              href="https://github.com/thesithunyein/palm-remit"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 hover:text-white"
+            >
+              <Github className="h-3.5 w-3.5" /> GitHub
             </a>
-            <a href="#" className="hover:text-white">
-              Demo
+            <a
+              href="https://twitter.com/thesithunyein"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 hover:text-white"
+            >
+              <Twitter className="h-3.5 w-3.5" /> Twitter
             </a>
-            <a href="#" className="hover:text-white">
-              Twitter
-            </a>
+            <Link href="/send" className="hover:text-white">
+              Try it
+            </Link>
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function CompareRow({
+  name,
+  fee,
+  time,
+  kyc,
+  censor,
+  highlight,
+}: {
+  name: string;
+  fee: string;
+  time: string;
+  kyc: boolean;
+  censor: boolean;
+  highlight?: boolean;
+}) {
+  const cellBase = highlight
+    ? 'bg-gradient-to-r from-palm-500/10 to-palm-500/5'
+    : 'bg-black/40';
+  const text = highlight ? 'text-white' : 'text-white/70';
+  return (
+    <>
+      <div className={`${cellBase} p-4 sm:p-6 font-semibold ${text}`}>
+        {highlight && (
+          <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-palm-400" />
+        )}
+        {name}
+      </div>
+      <div className={`${cellBase} p-4 sm:p-6 text-center ${text}`}>{fee}</div>
+      <div className={`${cellBase} p-4 sm:p-6 text-center ${text}`}>{time}</div>
+      <div className={`${cellBase} p-4 sm:p-6 text-center`}>
+        {kyc ? (
+          <X className="mx-auto h-4 w-4 text-red-400/80" />
+        ) : (
+          <Check className="mx-auto h-4 w-4 text-palm-400" />
+        )}
+      </div>
+      <div className={`${cellBase} p-4 sm:p-6 text-center`}>
+        {censor ? (
+          <Check className="mx-auto h-4 w-4 text-palm-400" />
+        ) : (
+          <X className="mx-auto h-4 w-4 text-red-400/80" />
+        )}
+      </div>
+    </>
+  );
+}
+
+function ArchNode({
+  label,
+  sub,
+  tone,
+}: {
+  label: string;
+  sub: string;
+  tone: 'white' | 'palm';
+}) {
+  const accent =
+    tone === 'palm'
+      ? 'border-palm-400/40 bg-palm-500/10'
+      : 'border-white/15 bg-white/5';
+  return (
+    <div
+      className={`rounded-2xl border ${accent} px-5 py-4 backdrop-blur-xl`}
+    >
+      <div className="text-[15px] font-semibold tracking-tight text-white">
+        {label}
+      </div>
+      <div className="mt-1 text-[12px] text-white/50">{sub}</div>
+    </div>
+  );
+}
+
+function ArchArrow({ label }: { label: string }) {
+  return (
+    <div className="my-2 flex items-center gap-3 px-2">
+      <div className="h-6 w-px bg-gradient-to-b from-white/30 to-white/5" />
+      <div className="text-[11px] uppercase tracking-widest text-white/40">
+        {label}
+      </div>
     </div>
   );
 }
