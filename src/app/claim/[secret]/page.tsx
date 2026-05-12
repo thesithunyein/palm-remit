@@ -27,6 +27,24 @@ export default function ClaimPage() {
   const [escrow, setEscrow] = useState<Keypair | null>(null);
   const [error, setError] = useState('');
   const [txSig, setTxSig] = useState('');
+  const [memo, setMemo] = useState('');
+
+  // Decode the optional memo from URL hash (client-side only, never sent
+  // to the server). Hash format: #m=<base64url>.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hash = window.location.hash;
+    const match = hash.match(/[#&]m=([^&]+)/);
+    if (!match) return;
+    try {
+      const b64 = match[1].replace(/-/g, '+').replace(/_/g, '/');
+      const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
+      const decoded = decodeURIComponent(escape(atob(padded)));
+      if (decoded) setMemo(decoded.slice(0, 80));
+    } catch {
+      // Bad encoding — silently ignore.
+    }
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -113,6 +131,22 @@ export default function ClaimPage() {
             <p className="mt-4 text-[16px] text-white/55">
               Sent via Palm Remit · Solana
             </p>
+
+            {memo && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
+                className="mt-8 max-w-md rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-left backdrop-blur-xl"
+              >
+                <div className="text-[11px] font-semibold uppercase tracking-widest text-palm-400">
+                  Note from sender
+                </div>
+                <div className="mt-1.5 text-[15px] leading-snug text-white/85">
+                  “{memo}”
+                </div>
+              </motion.div>
+            )}
 
             <div className="mt-16 w-full max-w-md">
               {!connected ? (

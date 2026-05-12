@@ -66,7 +66,16 @@ export default function SendPage() {
       await connection.confirmTransaction(sig, 'confirmed');
 
       const secret = encodeClaimSecret(escrow);
-      const url = `${APP_URL}/claim/${secret}`;
+      // Memo is encoded into the URL hash so it stays client-side only —
+      // never hits server logs or analytics. Hash is base64url'd to avoid
+      // breaking the URL with spaces or special characters.
+      const memoHash = memo.trim()
+        ? `#m=${btoa(unescape(encodeURIComponent(memo.trim())))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '')}`
+        : '';
+      const url = `${APP_URL}/claim/${secret}${memoHash}`;
       setClaimUrl(url);
       setTxSig(sig);
       setStage('success');
