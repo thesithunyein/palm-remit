@@ -36,10 +36,22 @@ export default async function Image() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 30,
+              boxShadow: '0 8px 32px rgba(74,222,128,0.3)',
             }}
           >
-            🌴
+            <svg
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96c1.4 9.3-2 14.74-8.2 17.04Z" />
+              <path d="M2 21c0-3 1.85-5.36 5.08-6" />
+            </svg>
           </div>
           <div style={{ fontSize: 28, fontWeight: 600, letterSpacing: -0.5 }}>
             Palm Remit

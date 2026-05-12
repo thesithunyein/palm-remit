@@ -11,3 +11,11 @@ next-env.d.ts
 keys/
 *.json.key
 .devnet-keypair.json
+
+# Internal prep docs — kept locally, not tracked
+DEMO_SCRIPT.md
+DEMO_SCRIPT_90.md
+SUBMISSION_COPY.md
+GAMMA_PROMPT.md
+HOW_TO_SHIP.md
+PITCH_DECK.md
