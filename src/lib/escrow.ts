@@ -191,17 +191,21 @@ export async function buildClaimTx({
   );
 
   // Sweep remaining SOL from escrow keypair to recipient.
-  // IMPORTANT: account for SOL the escrow will spend WITHIN this same tx,
-  // otherwise the SystemProgram.transfer simulates against the pre-tx
-  // balance and fails with "insufficient lamports".
-  //   - tx fee (escrow is feePayer):                  ~5_000 lamports
-  //   - rent for recipient's ATA (if creating it):  2_039_280 lamports
-  // ATA close refund goes to `recipient`, not escrow, so we don't get it back.
+  // Two constraints to satisfy:
+  //   1. Reserve enough lamports inside the tx for what escrow will spend:
+  //      - tx fee (escrow is feePayer, 2 signers):    ~10_000 lamports
+  //      - rent for recipient's ATA (if creating):  2_039_280 lamports
+  //   2. Escrow's post-tx balance must be either 0 OR >= rent-exempt
+  //      minimum (~890_880 lamports for 0-byte system account). Anything
+  //      in between triggers "insufficient funds for rent".
+  // Easiest: leave rent-exempt minimum in escrow, sweep the rest. The
+  // ~0.00089 SOL stuck per claim is acceptable dust on devnet.
+  const RENT_EXEMPT_SYSTEM = 890_880;
+  const FEE_BUFFER = 10_000;
+  const ataRent = recipientAtaInfo ? 0 : 2_039_280;
   const escrowBal = await connection.getBalance(escrow.publicKey);
-  const reserveForTx =
-    (recipientAtaInfo ? 0 : 2_039_280) + // ATA rent if we're creating one
-    10_000; // generous fee buffer
-  const sweep = escrowBal - reserveForTx;
+  const reserve = ataRent + FEE_BUFFER + RENT_EXEMPT_SYSTEM;
+  const sweep = escrowBal - reserve;
   if (sweep > 0) {
     ixs.push(
       SystemProgram.transfer({
