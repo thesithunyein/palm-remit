@@ -5,8 +5,7 @@ import dynamic from 'next/dynamic';
 import { Leaf } from 'lucide-react';
 
 const WalletButton = dynamic(
-  async () =>
-    (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
+  async () => (await import('./wallet-button')).WalletButton,
   { ssr: false }
 );
 
@@ -45,18 +44,7 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <WalletButton
-            style={{
-              backgroundColor: 'white',
-              color: 'black',
-              borderRadius: '10px',
-              height: '36px',
-              padding: '0 14px',
-              fontSize: '13px',
-              fontWeight: 600,
-              lineHeight: '36px',
-            }}
-          />
+          <WalletButton />
         </div>
       </div>
     </header>
