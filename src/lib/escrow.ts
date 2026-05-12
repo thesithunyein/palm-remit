@@ -191,14 +191,23 @@ export async function buildClaimTx({
   );
 
   // Sweep remaining SOL from escrow keypair to recipient.
-  // We use a System transfer with all but a small dust buffer.
+  // IMPORTANT: account for SOL the escrow will spend WITHIN this same tx,
+  // otherwise the SystemProgram.transfer simulates against the pre-tx
+  // balance and fails with "insufficient lamports".
+  //   - tx fee (escrow is feePayer):                  ~5_000 lamports
+  //   - rent for recipient's ATA (if creating it):  2_039_280 lamports
+  // ATA close refund goes to `recipient`, not escrow, so we don't get it back.
   const escrowBal = await connection.getBalance(escrow.publicKey);
-  if (escrowBal > 5000) {
+  const reserveForTx =
+    (recipientAtaInfo ? 0 : 2_039_280) + // ATA rent if we're creating one
+    10_000; // generous fee buffer
+  const sweep = escrowBal - reserveForTx;
+  if (sweep > 0) {
     ixs.push(
       SystemProgram.transfer({
         fromPubkey: escrow.publicKey,
         toPubkey: recipient,
-        lamports: escrowBal - 5000, // leave dust to keep tx valid
+        lamports: sweep,
       })
     );
   }
