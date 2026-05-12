@@ -1,7 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight,
   Lock,
@@ -15,6 +16,42 @@ import {
   Github,
   Twitter,
 } from 'lucide-react';
+
+const CORRIDORS = [
+  'Dubai → Manila',
+  'Riyadh → Karachi',
+  'Doha → Dhaka',
+  'Abu Dhabi → Kerala',
+  'Sharjah → Kathmandu',
+  'Kuwait → Colombo',
+];
+
+function CorridorRotator() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setI((v) => (v + 1) % CORRIDORS.length), 2200);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <div className="mt-6 flex items-center justify-center gap-2 text-[13px] uppercase tracking-widest text-white/40">
+      <span>Built for</span>
+      <span className="relative inline-block min-w-[180px] text-left sm:min-w-[210px]">
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={CORRIDORS[i]}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0 font-semibold text-palm-300"
+          >
+            {CORRIDORS[i]}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
@@ -45,6 +82,8 @@ export default function Home() {
             phone number on file, no waiting. Non-freezable money rails for
             the world's $800B remittance market.
           </p>
+
+          <CorridorRotator />
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link
