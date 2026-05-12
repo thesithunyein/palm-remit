@@ -8,18 +8,27 @@ Every piece of text you need to ship Palm Remit. Copy/paste, fill in the bracket
 
 > **Palm Remit — Send PUSD like sending a link.**
 >
-> Palm Remit is the simplest possible UX layer for PUSD. A sender connects their wallet, picks an amount, and gets a one-time claim link. The recipient — who needs no account, no KYC, no SOL for gas — opens the link, connects any Solana wallet, and the PUSD lands in their wallet in 4 seconds.
+> Try it: **https://palm-remit.vercel.app** (devnet, works in any browser)
 >
-> **Why this matters:** UAE alone sends $40B+ in remittances each year. Western Union takes 6–8%, banks freeze accounts, and existing crypto stablecoins are freezable. PUSD's "no freeze, no blacklist, no pause" design is the foundation. Palm Remit is the user-facing layer that finally makes it usable for the people who need it most — migrant workers sending money home.
+> ---
 >
-> **Architecture highlight:** We use a stateless ephemeral-keypair escrow pattern instead of a custom Anchor program. The claim secret is just the base58-encoded private key of a per-send keypair. No PDA, no upgrade authority, no kill switch — fully aligned with PUSD's censorship-resistant ethos. The escrow pays its own claim fee, so recipients never need SOL.
+> **What it is.** A sender connects their wallet, picks an amount, gets a one-time claim link. The recipient — no account, no KYC, no SOL for gas — opens the link, connects any Solana wallet, and the PUSD lands in 4 seconds. Already verified end-to-end on Solana devnet.
 >
-> **Live demo:** [Vercel URL]
-> **GitHub:** [repo URL]
-> **Demo video (3:30):** [Loom URL]
+> **Why now.** UAE alone sends $40B+ in remittances each year. Western Union takes 6–8%. Banks freeze accounts. USDC is freezable at the token level. **PUSD's "no freeze, no blacklist, no pause" is the foundation; Palm Remit is the consumer UX layer that finally makes it usable for the people who need it most** — migrant workers sending money home.
+>
+> **Why this architecture.** We deliberately built **no custom Anchor program**. Each send creates an ephemeral keypair; the PUSD lives in its associated token account; the claim secret is `base58(secretKey)`. No PDA, no upgrade authority, no kill switch — the only architecture aligned with PUSD's "no central authority" ethos. The escrow pays its own claim fee so recipients never need SOL. Pure SPL transfers, atomic, fully reversible if anything goes wrong.
+>
+> **Reproducible demo.** Mock PUSD mint deployed on devnet. Repo includes a `/api/setup` endpoint anyone can hit to mint their own dev PUSD and reproduce the full send/claim flow without local tooling.
+>
+> ---
+>
+> **Live demo:** https://palm-remit.vercel.app
+> **GitHub:** https://github.com/thesithunyein/palm-remit
+> **Demo video (90 sec):** [Loom URL]
 > **Pitch deck (12 slides):** [Slides URL]
+> **On-chain proof:** [Mint explorer link from landing page]
 >
-> Built solo in ~13 hours. Friction log included in the repo (`FRICTION_LOG.md`) with concrete asks for the Palm USD team.
+> Solo build, shipped end-to-end. `FRICTION_LOG.md` in repo with concrete asks for the Palm USD team based on real build experience (e.g., the lack of a public devnet PUSD mint).
 
 ---
 

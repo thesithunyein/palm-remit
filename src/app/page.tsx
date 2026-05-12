@@ -105,6 +105,8 @@ export default function Home() {
             </div>
           </div>
         </motion.div>
+
+        <OnChainProof />
       </section>
 
       {/* Why PUSD */}
@@ -410,6 +412,43 @@ function ArchArrow({ label }: { label: string }) {
       <div className="text-[11px] uppercase tracking-widest text-white/40">
         {label}
       </div>
+    </div>
+  );
+}
+
+function OnChainProof() {
+  const mint = process.env.NEXT_PUBLIC_PUSD_MINT;
+  if (!mint) return null;
+  const cluster = process.env.NEXT_PUBLIC_CLUSTER || 'devnet';
+  const short = `${mint.slice(0, 4)}…${mint.slice(-4)}`;
+  const explorer = `https://explorer.solana.com/address/${mint}?cluster=${cluster}`;
+  return (
+    <div className="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[12px] text-white/40">
+      <span className="inline-flex items-center gap-1.5">
+        <span className="h-1.5 w-1.5 rounded-full bg-palm-400 shadow-[0_0_8px_rgba(74,222,128,0.6)]" />
+        Verified on-chain
+      </span>
+      <span className="text-white/20">·</span>
+      <span>
+        Mock PUSD mint:{' '}
+        <a
+          href={explorer}
+          target="_blank"
+          rel="noreferrer"
+          className="font-mono text-white/70 underline-offset-4 hover:text-white hover:underline"
+        >
+          {short}
+        </a>
+      </span>
+      <span className="text-white/20">·</span>
+      <a
+        href={explorer}
+        target="_blank"
+        rel="noreferrer"
+        className="hover:text-white"
+      >
+        View on Solana Explorer →
+      </a>
     </div>
   );
 }
